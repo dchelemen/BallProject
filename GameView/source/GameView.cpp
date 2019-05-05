@@ -30,42 +30,28 @@ void CGameView::initialize()
 	m_Logger->logInfo( "Initializing" );
 	if ( SDL_Init( SDL_INIT_VIDEO ) == -1 )
 	{
-		std::string msg = "[Initialize] Error SDL_Init: " + std::string( SDL_GetError() );
-		m_Logger->logError( msg.c_str() );
+		m_Logger->logError( "[Initialize] Error SDL_Init: " + std::string( SDL_GetError() ) );
 		return;
 	}
 
 	SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
 
-	SDL_GL_SetAttribute( SDL_GL_BUFFER_SIZE, 32 );
-	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 );
-	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
-	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 );
-	SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 );
-
-	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-
-	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
-
-	m_Window = SDL_CreateWindow( "Hello SDL&OpenGL!", 100, 100, 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE );
+	m_Window = SDL_CreateWindow( "Ball Project", 0, 0, 0, 0, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP );
 	if ( !m_Window )
 	{
-		std::string msg = "[Initialize] Error SDL_CreateWindow: " + std::string( SDL_GetError() );
-		m_Logger->logError( msg.c_str() );
+		m_Logger->logError( "[Initialize] Error SDL_CreateWindow: " + std::string( SDL_GetError() ) );
 		return;
 	}
 
 	m_Context = SDL_GL_CreateContext( m_Window );
 	if ( !m_Context )
 	{
-		std::string msg = "[Initialize] Error SDL_CreateContext: " + std::string( SDL_GetError() );
-		m_Logger->logError( msg.c_str() );
+		m_Logger->logError( "[Initialize] Error SDL_CreateContext: " + std::string( SDL_GetError() ) );
 		return;
 	}
 
 	SDL_GL_SetSwapInterval( 1 );
 
-	// indítsuk el a GLEW-t
 	GLenum error = glewInit();
 	if ( error != GLEW_OK )
 	{
@@ -76,13 +62,12 @@ void CGameView::initialize()
 		return;
 	}
 
-	// kérdezzük le az OpenGL verziót
+	// get OpenGL version
 	int glVersion[ 2 ] = { -1, -1 };
 	glGetIntegerv( GL_MAJOR_VERSION, &glVersion[ 0 ] );
 	glGetIntegerv( GL_MINOR_VERSION, &glVersion[ 1 ] );
 
-	std::string str( "Running OpenGL " + std::to_string( glVersion[ 0 ] ) + '.' + std::to_string( glVersion[ 1 ] ) );
-	m_Logger->logInfo( str.c_str() );
+	m_Logger->logInfo( "Running OpenGL " + std::to_string( glVersion[ 0 ] ) + '.' + std::to_string( glVersion[ 1 ] ) );
 
 	if ( glVersion[ 0 ] == -1 || glVersion[ 1 ] == -1 )
 	{
@@ -115,14 +100,10 @@ bool CGameView::run()
 	bool quit = false;
 	while ( !quit )
 	{
-		// amíg van feldolgozandó üzenet dolgozzuk fel mindet:
 		while ( SDL_PollEvent( &sdlEvent ) )
 		{
 			switch ( sdlEvent.type )
 			{
-			case SDL_QUIT:
-				quit = true;
-				break;
 			case SDL_KEYDOWN:
 				if ( sdlEvent.key.keysym.sym == SDLK_ESCAPE )
 					quit = true;

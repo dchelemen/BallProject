@@ -35,7 +35,7 @@ public:
 	void Resize(int, int);
 
 private:
-	struct Vertex
+	struct SVertex
 	{
 		glm::vec3 p;
 		glm::vec3 c;
