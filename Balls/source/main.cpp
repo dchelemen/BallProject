@@ -14,7 +14,7 @@ int main( int argc, char* args[] )
 	logger.logInfo( "//----------" );
 	logger.logInfo( "Main Started" );
 
-	CGameView view;
+	CGameView view( nullptr );
 	view.run();
 
 	return 0;

@@ -3,14 +3,15 @@
 
 #include "Logger/include/Export.h"
 #include "Logger/include/GameLoggerPrivate.h"
+#include "GameCommon/include/Object.h"
 
 #include <string>
 
 
-class LOGGER_API CGameLogger
+class LOGGER_API CGameLogger : public CObject
 {
 public:
-	CGameLogger( const std::string& aClassName );
+	CGameLogger( const std::string& aClassName, CObject* aParent = nullptr );
 	~CGameLogger();
 
 	void setFileName( const std::string& aFileName );

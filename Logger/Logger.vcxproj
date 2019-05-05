@@ -151,6 +151,11 @@
     <ClCompile Include="source\GameLogger.cpp" />
     <ClCompile Include="source\GameLoggerPrivate.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GameCommon\GameCommon.vcxproj">
+      <Project>{edd0d79c-4fda-497c-8112-594e3a66845e}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

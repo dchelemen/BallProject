@@ -8,8 +8,9 @@ static const int THREAD_ID_START_POS = 10;
 static const int CLASS_NAME_START_POS = 20;
 static const int MESSAGE_START_POS = 50;
  
-CGameLogger::CGameLogger( const std::string& aClassName )
-	: m_ClassName( aClassName )
+CGameLogger::CGameLogger( const std::string& aClassName, CObject* aParent )
+	: CObject( aParent )
+	, m_ClassName( aClassName )
 {
 	m_Private->run();
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "GameCommon/include/Object.h"
+
 // GLEW
 #include <GL/glew.h>
 
@@ -14,11 +16,11 @@
 
 class CGameLogger;
 
-class CMyApp
+class CMyApp : public CObject
 {
 public:
-	CMyApp(void);
-	~CMyApp(void);
+	CMyApp( CObject* aParent );
+	~CMyApp();
 
 	bool Init();
 	void Clean();

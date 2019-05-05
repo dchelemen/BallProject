@@ -1,6 +1,8 @@
 #pragma once
 
-#include "Export.h"
+#include "GameCommon/include/Object.h"
+#include "GameView/include/Export.h"
+
 #include "functional"
 #include "string"
 #include "vector"
@@ -15,10 +17,10 @@ class CMyApp;
 
 struct SDL_Window;
 
-class GAMEVIEW_API CGameView
+class GAMEVIEW_API CGameView : public CObject
 {
 public:
-	CGameView();
+	CGameView( CObject* aParent );
 	~CGameView();
 
 	bool run();

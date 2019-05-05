@@ -8,21 +8,19 @@
 #include <GL/glew.h>
 #include <SDL_opengl.h>
 
-CGameView::CGameView()
-	: m_Window( nullptr )
+CGameView::CGameView( CObject* aParent )
+	: CObject( aParent )
+	, m_Window( nullptr )
 	, m_Context( nullptr )
 	, m_Logger( nullptr )
 {
-	m_Logger = new CGameLogger( "CGameView" );
-
+	m_Logger = new CGameLogger( "CGameView", this );
 }
 
 
 CGameView::~CGameView()
 {
 	SDL_Quit();
-	delete m_MyApp;
-	delete m_Logger;
 }
 
 void CGameView::initialize()
@@ -36,7 +34,7 @@ void CGameView::initialize()
 
 	SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
 
-	m_Window = SDL_CreateWindow( "Ball Project", 0, 0, 0, 0, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP );
+	m_Window = SDL_CreateWindow( "Ball Project", 100, 100, 1024, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE );
 	if ( !m_Window )
 	{
 		m_Logger->logError( "[Initialize] Error SDL_CreateWindow: " + std::string( SDL_GetError() ) );
@@ -82,7 +80,7 @@ void CGameView::initialize()
 	window_title << "OpenGL " << glVersion[ 0 ] << "." << glVersion[ 1 ];
 	SDL_SetWindowTitle( m_Window, window_title.str().c_str() );
 
-	m_MyApp = new CMyApp();
+	m_MyApp = new CMyApp( this );
 	if ( !m_MyApp->Init() )
 	{
 		SDL_GL_DeleteContext( m_Context );

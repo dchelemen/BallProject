@@ -6,19 +6,19 @@
 
 #include <vector>
 
-CMyApp::CMyApp(void)
-	: m_Logger( nullptr )
+CMyApp::CMyApp( CObject* aParent )
+	: CObject( aParent )
+	, m_Logger( nullptr )
 	, m_programID( 0 )
 	, m_vaoID( 0 )
 	, m_vboID( 0 )
 {
-	m_Logger = new CGameLogger( "CMyApp" );
+	m_Logger = new CGameLogger( "CMyApp", this );
 }
 
 
-CMyApp::~CMyApp(void)
+CMyApp::~CMyApp()
 {
-	delete m_Logger;
 }
 
 bool CMyApp::Init()
