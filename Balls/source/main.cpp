@@ -8,8 +8,7 @@
 
 int main( int argc, char* args[] )
 {
-	std::string str = "Main";
-	CGameLogger logger( str.c_str(), str.length() );
+	CGameLogger logger( "Main" );
 	logger.logInfo( "//----------" );
 	logger.logInfo( "//----------" );
 	logger.logInfo( "//----------" );

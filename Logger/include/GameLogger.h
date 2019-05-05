@@ -1,25 +1,26 @@
 #pragma once
+#pragma warning(disable: 4251)
 
 #include "Logger/include/Export.h"
 #include "Logger/include/GameLoggerPrivate.h"
 
 #include <string>
 
+
 class LOGGER_API CGameLogger
 {
 public:
-	CGameLogger( const char* aClassName, size_t aSize );
+	CGameLogger( const std::string& aClassName );
 	~CGameLogger();
 
-	void setFileName( const char* aFileName );
-	void logError( const char* aError );
-	void logInfo( const char* aError );
+	void setFileName( const std::string& aFileName );
+	void logError( const std::string& aError );
+	void logInfo( const std::string& aError );
 
 private:
-	void log( const char* aType, const char* aMessage );
+	void log( const std::string& aType, const std::string& aMessage );
 
 private:
 	static CGameLoggerPrivate*		m_Private;
-	char*							m_ClassName;
-	size_t							m_ClassNameSize;
+	std::string						m_ClassName;
 };

@@ -14,8 +14,7 @@ Az http://www.opengl-tutorial.org/ oldal alapján.
 */
 GLuint loadShader( GLenum _shaderType, const char* _fileName )
 {
-	std::string funcName( "loadShader" );
-	CGameLogger logger( funcName.c_str(), funcName.length() );
+	CGameLogger logger( "loadShader" );
 	// shader azonosito letrehozasa
 	GLuint loadedShader = glCreateShader( _shaderType );
 

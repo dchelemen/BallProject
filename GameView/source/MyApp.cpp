@@ -12,8 +12,7 @@ CMyApp::CMyApp(void)
 	, m_vaoID( 0 )
 	, m_vboID( 0 )
 {
-	std::string className( "CMyApp" );
-	m_Logger = new CGameLogger( className.c_str(), className.size() );
+	m_Logger = new CGameLogger( "CMyApp" );
 }
 
 

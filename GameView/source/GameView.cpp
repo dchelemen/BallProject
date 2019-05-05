@@ -13,8 +13,7 @@ CGameView::CGameView()
 	, m_Context( nullptr )
 	, m_Logger( nullptr )
 {
-	std::string className = "CGameView";
-	m_Logger = new CGameLogger( className.c_str(), className.length() );
+	m_Logger = new CGameLogger( "CGameView" );
 
 }
 
