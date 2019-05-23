@@ -32,28 +32,28 @@ bool CMyApp::Init()
 	std::vector<SVertex> vertices;
 	
 	vertices.push_back( { glm::vec3( 1, 0, 1 ), glm::vec3( 1, 0, 0 ) } );
-	vertices.push_back( { glm::vec3( -1, 0, -1 ), glm::vec3( 1, 1, 0 ) } );
-	vertices.push_back( { glm::vec3( 1, 0, -1 ), glm::vec3( 1, 0, 1 ) } );
-
-	vertices.push_back( { glm::vec3( -1, 0, 1 ), glm::vec3( 1, 0, 0 ) } );
-	vertices.push_back( { glm::vec3( -1, 0, -1 ), glm::vec3( 1, 1, 0 ) } );
-	vertices.push_back( { glm::vec3( 1, 0, 1 ), glm::vec3( 1, 0, 1 ) } );
-
-	vertices.push_back( { glm::vec3( -1, 0, 1 ), glm::vec3( 1, 0, 0 ) } );
-	vertices.push_back( { glm::vec3( 1, 0, 1 ), glm::vec3( 1, 1, 0 ) } );
-	vertices.push_back( { glm::vec3( 0, 2, 0 ), glm::vec3( 1, 0, 1 ) } );
-
-	vertices.push_back( { glm::vec3( 1, 0, 1 ), glm::vec3( 1, 0, 0 ) } );
-	vertices.push_back( { glm::vec3( 1, 0, -1 ), glm::vec3( 1, 1, 0 ) } );
-	vertices.push_back( { glm::vec3( 0, 2, 0 ), glm::vec3( 1, 0, 1 ) } );
-	
-	vertices.push_back( { glm::vec3( 1, 0, -1 ), glm::vec3( 1, 0, 0 ) } );
-	vertices.push_back( { glm::vec3( -1, 0, -1 ), glm::vec3( 1, 1, 0 ) } );
-	vertices.push_back( { glm::vec3( 0, 2, 0 ), glm::vec3( 1, 0, 1 ) } );
-
 	vertices.push_back( { glm::vec3( -1, 0, -1 ), glm::vec3( 1, 0, 0 ) } );
+	vertices.push_back( { glm::vec3( 1, 0, -1 ), glm::vec3( 1, 0, 0 ) } );
+
+	vertices.push_back( { glm::vec3( -1, 0, 1 ), glm::vec3( 1, 0, 0 ) } );
+	vertices.push_back( { glm::vec3( -1, 0, -1 ), glm::vec3( 1, 0, 0 ) } );
+	vertices.push_back( { glm::vec3( 1, 0, 1 ), glm::vec3( 1, 0, 0 ) } );
+
 	vertices.push_back( { glm::vec3( -1, 0, 1 ), glm::vec3( 1, 1, 0 ) } );
-	vertices.push_back( { glm::vec3( 0, 2, 0 ), glm::vec3( 1, 0, 1 ) } );
+	vertices.push_back( { glm::vec3( 1, 0, 1 ), glm::vec3( 1, 1, 0 ) } );
+	vertices.push_back( { glm::vec3( 0, 2, 0 ), glm::vec3( 1, 1, 0 ) } );
+
+	vertices.push_back( { glm::vec3( 1, 0, 1 ), glm::vec3( 0, 1, 0 ) } );
+	vertices.push_back( { glm::vec3( 1, 0, -1 ), glm::vec3( 0, 1, 0 ) } );
+	vertices.push_back( { glm::vec3( 0, 2, 0 ), glm::vec3( 0, 1, 0 ) } );
+	
+	vertices.push_back( { glm::vec3( 1, 0, -1 ), glm::vec3( 0, 0, 1 ) } );
+	vertices.push_back( { glm::vec3( -1, 0, -1 ), glm::vec3( 0, 0, 1 ) } );
+	vertices.push_back( { glm::vec3( 0, 2, 0 ), glm::vec3( 0, 0, 1 ) } );
+
+	vertices.push_back( { glm::vec3( -1, 0, -1 ), glm::vec3( 0, 1, 1 ) } );
+	vertices.push_back( { glm::vec3( -1, 0, 1 ), glm::vec3( 0, 1, 1 ) } );
+	vertices.push_back( { glm::vec3( 0, 2, 0 ), glm::vec3( 0, 1, 1 ) } );
 
 	glGenVertexArrays( 1, &m_vaoID ); // generate VAO
 	glBindVertexArray( m_vaoID ); // set this VAO active
@@ -103,7 +103,7 @@ bool CMyApp::Init()
 	glDeleteShader( vs_ID );
 	glDeleteShader( fs_ID );
 
-	m_matProj = glm::perspective( 45.0f, 640/480.0f, 1.0f, 1000.0f );
+	m_matProj = glm::perspective( 45.f, 1024/720.f, 1.0f, 1000.0f );
 	m_loc_world = glGetUniformLocation( m_programID, "world" );
 	m_loc_view = glGetUniformLocation( m_programID, "view" );
 	m_loc_proj = glGetUniformLocation( m_programID, "proj" );
@@ -121,7 +121,7 @@ void CMyApp::Clean()
 
 void CMyApp::Update()
 {
-	m_matView = glm::lookAt( glm::vec3( 0, 10, 10 ), glm::vec3( 0, 0, 0 ), glm::vec3( 0, 1, 0 ) );
+	m_matView = glm::lookAt( glm::vec3( 0, 20, 20 ), glm::vec3( 0, 0, 0 ), glm::vec3( 0, 1, 0 ) );
 }
 
 
@@ -132,18 +132,19 @@ void CMyApp::Render()
 	glUseProgram( m_programID ); // activate shaders
 
 	glUniformMatrix4fv( m_loc_view, 1, GL_FALSE, &( m_matView[ 0 ][ 0 ] ) );
-	glUniformMatrix4fv( m_loc_proj, 1, GL_FALSE, &(  m_matProj[ 0 ][ 0 ] ) );
+	glUniformMatrix4fv( m_loc_proj, 1, GL_FALSE, &( m_matProj[ 0 ][ 0 ] ) );
 
 	glBindVertexArray( m_vaoID ); // Activate VAO ( VBO automatically comes with it )
 
-	for ( int i = 0; i < 10; ++i )
+	float rotateDeg = SDL_GetTicks() / 1000.0f;
+	for ( int i = 0; i < 2; i++ )
 	{
-		m_matWorld = 
-			glm::rotate<float>( 360.0f / 10 * i, glm::vec3( 0, 1, 0 ) ) *
-			glm::rotate<float>( SDL_GetTicks() / 1000.0f / 10, glm::vec3( 0, 1, 0 ) ) *
-			glm::translate<float>( glm::vec3( 3, 0, 0 ) ) *
-			glm::rotate<float>( SDL_GetTicks() / 1000.0f, glm::vec3( -1, 0, 0 ) ) *
-			glm::rotate <float>( 90, glm::vec3( 0, 0, 1 ) ) *
+		m_matWorld =
+			glm::rotate<float>( 180.f * i, glm::vec3( 0, 1, 0 ) ) *
+			glm::rotate<float>( rotateDeg, glm::vec3( 0, 1, 0 ) ) *
+			glm::translate<float>( glm::vec3( 0, 0, -5 ) ) *
+			glm::rotate<float>( SDL_GetTicks() / 1000.f, glm::vec3( 0, 0, 1 ) ) *
+			glm::rotate<float>( 90.f, glm::vec3( 1.f, 0, 0 ) ) *
 			glm::translate<float>( glm::vec3( 0, -1, 0 ) );
 
 		glUniformMatrix4fv( m_loc_world, 1, GL_FALSE, &( m_matWorld[ 0 ][ 0 ] ) );

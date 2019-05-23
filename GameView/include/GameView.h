@@ -34,5 +34,5 @@ private:
 	SDL_Window*		m_Window;
 	CGameLogger*	m_Logger;
 
-	CMyApp*		m_MyApp;
+	CMyApp*			m_MyApp;
 };

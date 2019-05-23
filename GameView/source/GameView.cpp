@@ -102,6 +102,9 @@ bool CGameView::run()
 		{
 			switch ( sdlEvent.type )
 			{
+			case SDL_QUIT:
+					quit = true;
+				break;
 			case SDL_KEYDOWN:
 				if ( sdlEvent.key.keysym.sym == SDLK_ESCAPE )
 					quit = true;

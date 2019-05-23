@@ -1,8 +1,3 @@
-
-#include <iostream>
-#include <chrono>
-#include <thread>
-
 #include "GameView/include/GameView.h"
 #include "Logger/include/GameLogger.h"
 
