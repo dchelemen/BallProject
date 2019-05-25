@@ -18,6 +18,20 @@ class CGameLogger;
 
 class CMyApp : public CObject
 {
+private:
+	enum class Direction
+	{
+		TRANSLATE_UP,
+		TRANSLATE_DOWN,
+		TRANSLATE_LEFT,
+		TRANSLATE_RIGHT,
+		TURN_UP,
+		TURN_DOWN,
+		TURN_LEFT,
+		TURN_RIGHT,
+		NONE
+	};
+
 public:
 	CMyApp( CObject* aParent );
 	~CMyApp();
@@ -44,20 +58,19 @@ private:
 	};
 
 private:
-	// shaderekhez szükséges változók
-	GLuint m_programID; // shaderek programja
 
-	glm::mat4 m_matWorld;
-	glm::mat4 m_matView;
-	glm::mat4 m_matProj;
+	GLuint m_programID; // shaders program
 
-	GLuint m_loc_world;
-	GLuint m_loc_view;
-	GLuint m_loc_proj;
+	glm::mat4 m_Model_mtx;
+	glm::mat4 m_View_mtx;
+	glm::mat4 m_Proj_mtx;
 
-	// OpenGL-es dolgok
-	GLuint m_vaoID; // vertex array object erõforrás azonosító
-	GLuint m_vboID; // vertex buffer object erõforrás azonosító
+	GLuint m_MVPLocation;
+
+	// OpenGL ids
+	GLuint m_VAO_id; // vertex array object
+	GLuint m_VBO_id; // vertex buffer object
+	GLuint m_IndexBuffers_id; // vertex index buffer object
 
 	CGameLogger*			m_Logger;
 };
