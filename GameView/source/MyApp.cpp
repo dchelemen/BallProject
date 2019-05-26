@@ -2,6 +2,8 @@
 #include "GameView/include/GLUtils.hpp"
 #include "Logger/include/GameLogger.h"
 
+#include <glm/gtx/transform2.hpp>
+
 #include <math.h>
 
 #include <vector>
@@ -13,6 +15,7 @@ CMyApp::CMyApp( CObject* aParent )
 	, m_VAO_id( 0 )
 	, m_VBO_id( 0 )
 	, m_IndexBuffers_id( 0 )
+	, m_Camera( new CCamera( this ) )
 {
 	m_Logger = new CGameLogger( "CMyApp", this );
 }
@@ -20,6 +23,7 @@ CMyApp::CMyApp( CObject* aParent )
 
 CMyApp::~CMyApp()
 {
+	Clean();
 }
 
 bool CMyApp::Init()
@@ -123,6 +127,7 @@ bool CMyApp::Init()
 	glDeleteShader( fs_ID );
 
 	m_Proj_mtx = glm::perspective( glm::radians( 45.f ), 1024/720.f, 1.0f, 1000.0f );
+	m_Camera->setView( glm::vec3( 0, 20, 20 ), glm::vec3( 0, 0, 0 ), glm::vec3( 0, 1, 0 ) );
 	m_MVPLocation = glGetUniformLocation( m_programID, "MVP" );
 
 	return true;
@@ -131,16 +136,11 @@ bool CMyApp::Init()
 void CMyApp::Clean()
 {
 	glDeleteBuffers( 1, &m_VBO_id );
+	glDeleteBuffers( 1, &m_IndexBuffers_id );
 	glDeleteVertexArrays( 1, &m_VAO_id );
 
 	glDeleteProgram( m_programID );
 }
-
-void CMyApp::Update()
-{
-	m_View_mtx = glm::lookAt( glm::vec3( 0, 20, 20 ), glm::vec3( 0, 0, 0 ), glm::vec3( 0, 1, 0 ) );
-}
-
 
 void CMyApp::Render()
 {
@@ -151,6 +151,7 @@ void CMyApp::Render()
 
 	glm::mat4 mvp( 0 );
 
+	auto viewMtx = m_Camera->getViewMtx();
 	float rotateDeg = SDL_GetTicks() / 1000.0f;
 	for ( int i = 0; i < 10; i++ )
 	{
@@ -162,7 +163,7 @@ void CMyApp::Render()
 			glm::rotate<float>( glm::radians( 90.f ), glm::vec3( 1.f, 0, 0 ) ) *
 			glm::translate<float>( glm::vec3( 0, -1, 0 ) );
 
-		mvp = m_Proj_mtx * m_View_mtx * m_Model_mtx;
+		mvp = m_Proj_mtx * viewMtx * m_Model_mtx;
 		glUniformMatrix4fv( m_MVPLocation, 1, GL_FALSE, &( mvp[ 0 ][ 0 ] ) );
 		glDrawElements( GL_TRIANGLES, 18, GL_UNSIGNED_SHORT, 0 );
 	}
@@ -171,7 +172,7 @@ void CMyApp::Render()
 		glm::rotate <float>( SDL_GetTicks() / 10000.0f, glm::vec3( 0, 1, 0 ) ) *
 		glm::scale<float>( glm::vec3( 1, abs( sin( SDL_GetTicks() / 10000.0 * 2 * M_PI ) * 2 ), 1 ) );
 
-	mvp = m_Proj_mtx * m_View_mtx * m_Model_mtx;
+	mvp = m_Proj_mtx * viewMtx * m_Model_mtx;
 	glUniformMatrix4fv( m_MVPLocation, 1, GL_FALSE, &( mvp[ 0 ][ 0 ] ) );
 	glDrawElements( GL_TRIANGLES, 18, GL_UNSIGNED_SHORT, 0 );
 
@@ -181,25 +182,17 @@ void CMyApp::Render()
 
 void CMyApp::KeyboardDown( SDL_KeyboardEvent& key )
 {
-	switch ( key.keysym.sym )
-	{
-	case SDLK_DOWN:
-	case SDLK_s: break;
-	case SDLK_UP:
-	case SDLK_w: break;
-	case SDLK_LEFT:
-	case SDLK_a: break;
-	case SDLK_RIGHT:
-	case SDLK_d: break;
-	}
+	m_Camera->keyDown( key.keysym.sym, SDL_GetTicks() );
 }
 
 void CMyApp::KeyboardUp( SDL_KeyboardEvent& key )
 {
+	m_Camera->keyUp( key.keysym.sym );
 }
 
 void CMyApp::MouseMove( SDL_MouseMotionEvent& mouse )
 {
+	m_Camera->mouseMove( mouse.x, mouse.y );
 }
 
 void CMyApp::MouseDown( SDL_MouseButtonEvent& mouse )

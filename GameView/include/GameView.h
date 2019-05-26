@@ -3,19 +3,12 @@
 #include "GameCommon/include/Object.h"
 #include "GameView/include/Export.h"
 
-#include "functional"
-#include "string"
-#include "vector"
-
-
 // SDL
 #include <SDL.h>
 //
 
 class CGameLogger;
 class CMyApp;
-
-struct SDL_Window;
 
 class GAMEVIEW_API CGameView : public CObject
 {

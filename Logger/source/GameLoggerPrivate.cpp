@@ -33,6 +33,14 @@ void CGameLoggerPrivate::run()
 	if ( m_IsRunning )
 		return;
 
+	std::ofstream f;
+	f.open( m_FileName.c_str(), std::ofstream::app );
+	if ( !f.is_open() )
+	{
+		return;
+	}
+	f.close();
+
 	m_IsRunning = true;
 	m_Thread = std::thread( &CGameLoggerPrivate::saveMessage, this );
 }

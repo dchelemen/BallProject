@@ -3,8 +3,8 @@
 #include "GameView/include/MyApp.h"
 #include "Logger/include/GameLogger.h"
 
-#include <iostream>
 #include <sstream>
+
 #include <GL/glew.h>
 #include <SDL_opengl.h>
 
@@ -134,7 +134,6 @@ bool CGameView::run()
 			}
 		}
 
-		m_MyApp->Update();
 		m_MyApp->Render();
 
 		SDL_GL_SwapWindow( m_Window );

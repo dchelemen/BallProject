@@ -1,18 +1,19 @@
 #pragma once
 
 #include "GameCommon/include/Object.h"
-
+#include "GameView/include/Camera.h"
 // GLEW
 #include <GL/glew.h>
 
 // SDL
 #include <SDL.h>
-#include <SDL_opengl.h>
 
 // GLM
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/mat4x4.hpp>
+//
+
+
 
 class CGameLogger;
 
@@ -39,7 +40,6 @@ public:
 	bool Init();
 	void Clean();
 
-	void Update();
 	void Render();
 
 	void KeyboardDown(SDL_KeyboardEvent&);
@@ -62,7 +62,6 @@ private:
 	GLuint m_programID; // shaders program
 
 	glm::mat4 m_Model_mtx;
-	glm::mat4 m_View_mtx;
 	glm::mat4 m_Proj_mtx;
 
 	GLuint m_MVPLocation;
@@ -73,5 +72,7 @@ private:
 	GLuint m_IndexBuffers_id; // vertex index buffer object
 
 	CGameLogger*			m_Logger;
+
+	CCamera*				m_Camera;
 };
 

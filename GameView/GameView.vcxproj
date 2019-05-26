@@ -145,12 +145,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\Export.h" />
     <ClInclude Include="include\GameView.h" />
     <ClInclude Include="include\GLUtils.hpp" />
     <ClInclude Include="include\MyApp.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\Camera.cpp" />
     <ClCompile Include="source\GameView.cpp" />
     <ClCompile Include="source\MyApp.cpp" />
   </ItemGroup>
