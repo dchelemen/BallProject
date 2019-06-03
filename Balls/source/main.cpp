@@ -9,6 +9,8 @@ int main( int argc, char* args[] )
 	logger.logInfo( "//----------" );
 	logger.logInfo( "Main Started" );
 
+	logger.setFileName( "C:/BallProject/GameLog.txt" );
+
 	CGameView view( nullptr );
 	view.run();
 
