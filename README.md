@@ -22,3 +22,8 @@ Controlls:
  Ctrl   - move down
  Space  - move up
  Mouse  - rotating the camera
+ Esc	- exiting the program
+ 
+The game sets the logFile path automatically to C:/BallProject/GameLog.txt
+If you dont have C:/BallProject folder, please create it, or modify the setFileName in main.cpp of Balls project.
+I will modify this soon by setting the target filename in a settings.txt file, which the program should read from.
