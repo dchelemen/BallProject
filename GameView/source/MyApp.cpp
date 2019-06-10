@@ -62,8 +62,6 @@ bool CMyApp::Init()
 	vertices.push_back( { glm::vec3( 1, 0, 1 ), glm::vec3( 1, 1, 0 ) } );
 	vertices.push_back( { glm::vec3( 0, 2, 0 ), glm::vec3( 1, 1, 0 ) } );
 
-	
-
 
 	GLushort indexes[] =
 		{
@@ -99,8 +97,11 @@ bool CMyApp::Init()
 	glBindBuffer( GL_ARRAY_BUFFER, 0 ); // set VBO inactive
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 ); // set VBO inactive
 	
-	GLuint vs_ID = loadShader( GL_VERTEX_SHADER, "../GameView/resources/myVert.vert" );
-	GLuint fs_ID = loadShader( GL_FRAGMENT_SHADER, "../GameView/resources/myFrag.frag" );
+	GLuint vs_ID = loadShader( GL_VERTEX_SHADER, true );
+	GLuint fs_ID = loadShader( GL_FRAGMENT_SHADER, false );
+
+	if ( !vs_ID || !fs_ID )
+		return false;
 
 	m_programID = glCreateProgram(); // create program which contains the shaders
 	glAttachShader( m_programID, vs_ID );
@@ -126,7 +127,7 @@ bool CMyApp::Init()
 	glDeleteShader( vs_ID );
 	glDeleteShader( fs_ID );
 
-	m_Proj_mtx = glm::perspective( glm::radians( 45.f ), 1024/720.f, 1.0f, 1000.0f );
+	m_Proj_mtx = glm::perspective( glm::radians( 45.f ), 1280/720.f, 1.0f, 1000.0f );
 	m_Camera->setView( glm::vec3( 0, 20, 20 ), glm::vec3( 0, 0, 0 ), glm::vec3( 0, 1, 0 ) );
 	m_MVPLocation = glGetUniformLocation( m_programID, "MVP" );
 

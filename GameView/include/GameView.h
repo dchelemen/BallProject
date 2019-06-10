@@ -3,12 +3,9 @@
 #include "GameCommon/include/Object.h"
 #include "GameView/include/Export.h"
 
-// SDL
-#include <SDL.h>
-//
-
 class CGameLogger;
 class CMyApp;
+class CGameWindow;
 
 class GAMEVIEW_API CGameView : public CObject
 {
@@ -20,11 +17,10 @@ public:
 	void stop();
 
 private:
-	void initialize();
+	bool initialize();
 
 private:
-	SDL_GLContext	m_Context;
-	SDL_Window*		m_Window;
+	CGameWindow*	m_Window;
 	CGameLogger*	m_Logger;
 
 	CMyApp*			m_MyApp;

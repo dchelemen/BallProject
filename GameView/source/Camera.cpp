@@ -17,8 +17,6 @@ CCamera::~CCamera()
 
 }
 
-
-///
 glm::mat4 CCamera::getViewMtx()
 {
 	processKeyMap();

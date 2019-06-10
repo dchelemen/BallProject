@@ -1,98 +1,47 @@
 
 #include "GameView/include/GameView.h"
 #include "GameView/include/MyApp.h"
+#include "GameView/include/GameWindow.h"
 #include "Logger/include/GameLogger.h"
-
-#include <sstream>
-
-#include <GL/glew.h>
-#include <SDL_opengl.h>
 
 CGameView::CGameView( CObject* aParent )
 	: CObject( aParent )
-	, m_Window( nullptr )
-	, m_Context( nullptr )
-	, m_Logger( nullptr )
+	, m_Window( new CGameWindow( this ) )
+	, m_Logger( new CGameLogger( "CGameView", this ) )
 {
-	m_Logger = new CGameLogger( "CGameView", this );
 }
 
 
 CGameView::~CGameView()
 {
-	SDL_Quit();
 }
 
-void CGameView::initialize()
+bool CGameView::initialize()
 {
-	m_Logger->logInfo( "Initializing" );
-	if ( SDL_Init( SDL_INIT_VIDEO ) == -1 )
-	{
-		m_Logger->logError( "[Initialize] Error SDL_Init: " + std::string( SDL_GetError() ) );
-		return;
-	}
+	m_Logger->logInfo( "initializing GameView" );
 
-	SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
-
-	m_Window = SDL_CreateWindow( "Ball Project", 100, 100, 1024, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE );
-	if ( !m_Window )
-	{
-		m_Logger->logError( "[Initialize] Error SDL_CreateWindow: " + std::string( SDL_GetError() ) );
-		return;
-	}
-
-	m_Context = SDL_GL_CreateContext( m_Window );
-	if ( !m_Context )
-	{
-		m_Logger->logError( "[Initialize] Error SDL_CreateContext: " + std::string( SDL_GetError() ) );
-		return;
-	}
-
-	SDL_GL_SetSwapInterval( 1 );
-
-	GLenum error = glewInit();
-	if ( error != GLEW_OK )
-	{
-		SDL_GL_DeleteContext( m_Context );
-		SDL_DestroyWindow( m_Window );
-
-		m_Logger->logError( "[Initialize] Error at glewInit" );
-		return;
-	}
-
-	// get OpenGL version
-	int glVersion[ 2 ] = { -1, -1 };
-	glGetIntegerv( GL_MAJOR_VERSION, &glVersion[ 0 ] );
-	glGetIntegerv( GL_MINOR_VERSION, &glVersion[ 1 ] );
-
-	m_Logger->logInfo( "Running OpenGL " + std::to_string( glVersion[ 0 ] ) + '.' + std::to_string( glVersion[ 1 ] ) );
-
-	if ( glVersion[ 0 ] == -1 || glVersion[ 1 ] == -1 )
-	{
-		SDL_GL_DeleteContext( m_Context );
-		SDL_DestroyWindow( m_Window );
-
-		m_Logger->logError( "[Initialize] Error at creating OGL context. Probably wrong SDL_GL_SetAttribute(...)" );
-		return;
-	}
-
-	std::stringstream window_title;
-	window_title << "OpenGL " << glVersion[ 0 ] << "." << glVersion[ 1 ];
-	SDL_SetWindowTitle( m_Window, window_title.str().c_str() );
+	m_Window->setProperties( "OpenGLProject", 100, 100, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE );
+	if ( !m_Window->buildWindow() )
+		return false;
 
 	m_MyApp = new CMyApp( this );
 	if ( !m_MyApp->Init() )
 	{
-		SDL_GL_DeleteContext( m_Context );
-		SDL_DestroyWindow( m_Window );
-		return;
+		m_Window->destroyWindow();
+		return false;
 	}
+
+	return true;
 }
 
 bool CGameView::run()
 {
+	if ( !initialize() )
+		return false;
+
+
 	m_Logger->logInfo( "Run started" );
-	initialize();
+	
 
 	SDL_Event sdlEvent;
 	bool quit = false;
@@ -136,7 +85,7 @@ bool CGameView::run()
 
 		m_MyApp->Render();
 
-		SDL_GL_SwapWindow( m_Window );
+		SDL_GL_SwapWindow( m_Window->getWindow() );
 	}
 
 	m_Logger->logInfo( "Run Finished" );
@@ -145,7 +94,6 @@ bool CGameView::run()
 
 void CGameView::stop()
 {
-	SDL_GL_DeleteContext( m_Context );
-	SDL_DestroyWindow( m_Window );
+	m_Window->destroyWindow();
 }
 

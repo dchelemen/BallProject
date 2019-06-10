@@ -9,38 +9,32 @@
 #include "Logger/include/GameLogger.h"
 
 //Based on http://www.opengl-tutorial.org/
-GLuint loadShader( GLenum aShaderType, const char* aFileName )
+GLuint loadShader( GLenum aShaderType, bool aIsVertex = true )
 {
 	CGameLogger logger( "loadShader" );
 
+	std::string shaderType = aIsVertex ? "vertex" : "fragment";
 	// get shader id
 	GLuint loadedShader = glCreateShader( aShaderType );
 	if ( loadedShader == 0 )
 	{
-		logger.logError( "Error at " + std::string( aFileName ) + " shader initializing (glCreateShader)!" );
+		logger.logError( "Error at " + std::string( shaderType ) + " shader initializing (glCreateShader)!" );
 		return 0;
 	}
 	
 	// load Shader
-	std::string shaderCode = "";
-	wchar_t buffer[ MAX_PATH ];
-	GetModuleFileName( NULL, buffer, MAX_PATH );
-
-	std::ifstream shaderStream( aFileName );
-	if ( !shaderStream.is_open() )
+	
+	const std::string vertex =
 	{
-		logger.logError( "Error at " + std::string( aFileName ) + " loading shader (glCreateShader)!\n" );
-		return 0;
-	}
+		#include "GameView\resources\myVert.vert"
+	};
 
-	std::string line = "";
-	while ( std::getline( shaderStream, line ) )
+	const std::string fragment =
 	{
-		shaderCode += line + "\n";
-	}
-	shaderStream.close();
+		#include "GameView\resources\myFrag.frag"
+	};
 
-	const char* sourcePointer = shaderCode.c_str();
+	const char* sourcePointer = aIsVertex ? vertex.c_str() : fragment.c_str();
 	glShaderSource( loadedShader, 1, &sourcePointer, NULL );
 
 	glCompileShader( loadedShader );
