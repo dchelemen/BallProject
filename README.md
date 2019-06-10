@@ -19,14 +19,14 @@ T:\OBLPack\
    - {SDL2/SDL2main/SDL2_image/glew32/glew32s.lib}
    
 Controlls:
- W      - forward
- A      - strafe left
- D      - strafe right
- S      - backward
- Ctrl   - move down
- Space  - move up
- Mouse  - rotating the camera
- Esc	- exiting the program
+ - W      - forward
+ - A      - strafe left
+ - D      - strafe right
+ - S      - backward
+ - Ctrl   - move down
+ - Space  - move up
+ - Mouse  - rotating the camera
+ - Esc	- exiting the program
  
 The game sets the logFile path automatically to C:/BallProject/GameLog.txt
 If you dont have C:/BallProject folder, please create it, or modify the setFileName in main.cpp of Balls project.
