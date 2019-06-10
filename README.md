@@ -4,15 +4,23 @@ This is an experiment project for study and test OpenGL. The hierarchy of the cl
 Probably every object would move to a different dll, which could give its own Model matrixes for the Model-View-Projection matrixes,
 and the View would get only their interfaces.
 
-For compiling the program, you must have a t: drive with an OGLPack.
-You must have T:\OGLPack\lib\x64 libraries and T:\OGLPack\include headers available
-
-The pojects uses additional dependencies for:
-    opengl32.lib
-    SDL2.lib
-    SDL2main.lib
-    SDL2_image.lib
-    glew32.lib
+For cmake, make sure you have the following file structure in T:\ drive, or modify the FindSDL2.cmake, FindGLM.cmake, FindGLEW.cmake
+T:\
+->OGLPack
+  ->bin
+    ->x64
+      ->{ SDL2/SDL2_image/glew32.dll }
+  ->include
+    ->GL
+      ->{ eglew/glew/glxew/wglew.h }
+    ->glm
+      ->gtx
+      ->gtc
+      ->{OpenGl headers}
+    ->{ all SDL headers (SDL.h) }
+  ->lib
+    ->x64
+      ->{SDL2/SDL2main/SDL2_image/glew32/glew32s.lib}
    
 Controlls:
  W      - forward
