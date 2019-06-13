@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GameCommon/include/Object.h"
-#include "GameView/include/Camera.h"
+
 // GLEW
 #include <GL/glew.h>
 
@@ -13,11 +13,11 @@
 #include <glm/mat4x4.hpp>
 //
 
-
-
+class CCamera;
+class CDefaultShader;
 class CGameLogger;
 
-class CMyApp : public CObject
+class CGameViewPrivate : public CObject
 {
 private:
 	enum class Direction
@@ -34,8 +34,8 @@ private:
 	};
 
 public:
-	CMyApp( CObject* aParent );
-	~CMyApp();
+	CGameViewPrivate( CObject* aParent );
+	~CGameViewPrivate();
 
 	bool Init();
 	void Clean();
@@ -59,20 +59,19 @@ private:
 
 private:
 
-	GLuint m_programID; // shaders program
+	CDefaultShader*		m_DefaultShader;
 
-	glm::mat4 m_Model_mtx;
-	glm::mat4 m_Proj_mtx;
+	glm::mat4			m_Model_mtx;
+	glm::mat4			m_Proj_mtx;
 
-	GLuint m_MVPLocation;
+	CCamera*			m_Camera;
+	GLuint				m_MVPLocation;
 
 	// OpenGL ids
-	GLuint m_VAO_id; // vertex array object
-	GLuint m_VBO_id; // vertex buffer object
-	GLuint m_IndexBuffers_id; // vertex index buffer object
+	GLuint				m_VAO_id; // vertex array object
+	GLuint				m_VBO_id; // vertex buffer object
+	GLuint				m_IndexBuffers_id; // vertex index buffer object
 
-	CGameLogger*			m_Logger;
-
-	CCamera*				m_Camera;
+	CGameLogger*		m_Logger;
 };
 

@@ -13,6 +13,7 @@ CObject::~CObject()
 	for ( auto child : m_ChildVect )
 	{
 		delete child;
+		child = nullptr;
 	}
 	m_ChildVect.clear();
 }

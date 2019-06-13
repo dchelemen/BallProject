@@ -1,6 +1,6 @@
 
 #include "GameView/include/GameView.h"
-#include "GameView/include/MyApp.h"
+#include "GameView/include/GameViewPrivate.h"
 #include "GameView/include/GameWindow.h"
 #include "Logger/include/GameLogger.h"
 
@@ -8,6 +8,7 @@ CGameView::CGameView( CObject* aParent )
 	: CObject( aParent )
 	, m_Window( new CGameWindow( this ) )
 	, m_Logger( new CGameLogger( "CGameView", this ) )
+	, m_GameViewPrivate( nullptr )
 {
 }
 
@@ -24,8 +25,8 @@ bool CGameView::initialize()
 	if ( !m_Window->buildWindow() )
 		return false;
 
-	m_MyApp = new CMyApp( this );
-	if ( !m_MyApp->Init() )
+	m_GameViewPrivate = new CGameViewPrivate( this );
+	if ( !m_GameViewPrivate->Init() )
 	{
 		m_Window->destroyWindow();
 		return false;
@@ -57,33 +58,33 @@ bool CGameView::run()
 			case SDL_KEYDOWN:
 				if ( sdlEvent.key.keysym.sym == SDLK_ESCAPE )
 					quit = true;
-				m_MyApp->KeyboardDown( sdlEvent.key );
+				m_GameViewPrivate->KeyboardDown( sdlEvent.key );
 				break;
 			case SDL_KEYUP:
-				m_MyApp->KeyboardUp( sdlEvent.key );
+				m_GameViewPrivate->KeyboardUp( sdlEvent.key );
 				break;
 			case SDL_MOUSEBUTTONDOWN:
-				m_MyApp->MouseDown( sdlEvent.button );
+				m_GameViewPrivate->MouseDown( sdlEvent.button );
 				break;
 			case SDL_MOUSEBUTTONUP:
-				m_MyApp->MouseUp( sdlEvent.button );
+				m_GameViewPrivate->MouseUp( sdlEvent.button );
 				break;
 			case SDL_MOUSEWHEEL:
-				m_MyApp->MouseWheel( sdlEvent.wheel );
+				m_GameViewPrivate->MouseWheel( sdlEvent.wheel );
 				break;
 			case SDL_MOUSEMOTION:
-				m_MyApp->MouseMove( sdlEvent.motion );
+				m_GameViewPrivate->MouseMove( sdlEvent.motion );
 				break;
 			case SDL_WINDOWEVENT:
 				if ( sdlEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED )
 				{
-					m_MyApp->Resize( sdlEvent.window.data1, sdlEvent.window.data2 );
+					m_GameViewPrivate->Resize( sdlEvent.window.data1, sdlEvent.window.data2 );
 				}
 				break;
 			}
 		}
 
-		m_MyApp->Render();
+		m_GameViewPrivate->Render();
 
 		SDL_GL_SwapWindow( m_Window->getWindow() );
 	}

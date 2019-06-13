@@ -5,8 +5,8 @@ file(GLOB SOURCES
 	include/*.h
 	include/*.hpp
 	source/*.cpp
-	resources/*.vert
-	resources/*.frag
+	resources/*.vs
+	resources/*.fs
 )
 
 add_library( ${GAMEVIEW} SHARED ${SOURCES} )

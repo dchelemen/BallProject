@@ -4,13 +4,13 @@
 #include "GameView/include/Export.h"
 
 class CGameLogger;
-class CMyApp;
+class CGameViewPrivate;
 class CGameWindow;
 
 class GAMEVIEW_API CGameView : public CObject
 {
 public:
-	CGameView( CObject* aParent );
+	CGameView( CObject* aParent = nullptr );
 	~CGameView();
 
 	bool run();
@@ -20,8 +20,8 @@ private:
 	bool initialize();
 
 private:
-	CGameWindow*	m_Window;
-	CGameLogger*	m_Logger;
+	CGameWindow*		m_Window;
+	CGameLogger*		m_Logger;
 
-	CMyApp*			m_MyApp;
+	CGameViewPrivate*	m_GameViewPrivate;
 };

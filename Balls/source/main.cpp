@@ -14,7 +14,7 @@ int main( int argc, char* args[] )
 
 	
 
-	CGameView view( nullptr );
+	CGameView view;
 	view.run();
 
 	return 0;

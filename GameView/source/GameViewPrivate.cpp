@@ -1,5 +1,6 @@
-#include "GameView/include/MyApp.h"
-#include "GameView/include/GLUtils.hpp"
+#include "GameView/include/GameViewPrivate.h"
+#include "GameView/include/DefaultShader.h"
+#include "GameView/include/Camera.h"
 #include "Logger/include/GameLogger.h"
 
 #include <glm/gtx/transform2.hpp>
@@ -8,25 +9,25 @@
 
 #include <vector>
 
-CMyApp::CMyApp( CObject* aParent )
+CGameViewPrivate::CGameViewPrivate( CObject* aParent )
 	: CObject( aParent )
 	, m_Logger( nullptr )
-	, m_programID( 0 )
 	, m_VAO_id( 0 )
 	, m_VBO_id( 0 )
 	, m_IndexBuffers_id( 0 )
 	, m_Camera( new CCamera( this ) )
+	, m_DefaultShader( new CDefaultShader( this ) )
 {
 	m_Logger = new CGameLogger( "CMyApp", this );
 }
 
 
-CMyApp::~CMyApp()
+CGameViewPrivate::~CGameViewPrivate()
 {
 	Clean();
 }
 
-bool CMyApp::Init()
+bool CGameViewPrivate::Init()
 {
 	glClearColor( 0.529f, 0.808f, 0.922f, 1.0f ); // skyblue
 
@@ -97,57 +98,30 @@ bool CMyApp::Init()
 	glBindBuffer( GL_ARRAY_BUFFER, 0 ); // set VBO inactive
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 ); // set VBO inactive
 	
-	GLuint vs_ID = loadShader( GL_VERTEX_SHADER, true );
-	GLuint fs_ID = loadShader( GL_FRAGMENT_SHADER, false );
-
-	if ( !vs_ID || !fs_ID )
-		return false;
-
-	m_programID = glCreateProgram(); // create program which contains the shaders
-	glAttachShader( m_programID, vs_ID );
-	glAttachShader( m_programID, fs_ID );
-
-	glBindAttribLocation( m_programID, 0, "vs_in_pos" );
-	glBindAttribLocation( m_programID, 1, "vs_in_col" );
-
-	glLinkProgram( m_programID );
-
-	GLint infoLogLength = 0, result = 0;
-	glGetProgramiv( m_programID, GL_LINK_STATUS, &result );
-	glGetProgramiv( m_programID, GL_INFO_LOG_LENGTH, &infoLogLength );
-	if ( GL_FALSE == result )
+	if ( !m_DefaultShader->isValid() )
 	{
-		char* error = new char[ infoLogLength ];
-		glGetProgramInfoLog( m_programID, infoLogLength, NULL, error );
-		m_Logger->logError( "[ app.Init() ] Problems at creating shaders: " + std::string( error ) );
-		delete[] error;
+		m_Logger->logError( "Invalid Shader" );
 		return false;
 	}
 
-	glDeleteShader( vs_ID );
-	glDeleteShader( fs_ID );
-
 	m_Proj_mtx = glm::perspective( glm::radians( 45.f ), 1280/720.f, 1.0f, 1000.0f );
 	m_Camera->setView( glm::vec3( 0, 20, 20 ), glm::vec3( 0, 0, 0 ), glm::vec3( 0, 1, 0 ) );
-	m_MVPLocation = glGetUniformLocation( m_programID, "MVP" );
 
 	return true;
 }
 
-void CMyApp::Clean()
+void CGameViewPrivate::Clean()
 {
 	glDeleteBuffers( 1, &m_VBO_id );
 	glDeleteBuffers( 1, &m_IndexBuffers_id );
 	glDeleteVertexArrays( 1, &m_VAO_id );
-
-	glDeleteProgram( m_programID );
 }
 
-void CMyApp::Render()
+void CGameViewPrivate::Render()
 {
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-	glUseProgram( m_programID ); // activate shaders
+	m_DefaultShader->use(); // activate default shader
 	glBindVertexArray( m_VAO_id ); // Activate VAO ( VBO automatically comes with it )
 
 	glm::mat4 mvp( 0 );
@@ -165,7 +139,8 @@ void CMyApp::Render()
 			glm::translate<float>( glm::vec3( 0, -1, 0 ) );
 
 		mvp = m_Proj_mtx * viewMtx * m_Model_mtx;
-		glUniformMatrix4fv( m_MVPLocation, 1, GL_FALSE, &( mvp[ 0 ][ 0 ] ) );
+		m_DefaultShader->setMVP_mtx( mvp );
+
 		glDrawElements( GL_TRIANGLES, 18, GL_UNSIGNED_SHORT, 0 );
 	}
 
@@ -174,41 +149,42 @@ void CMyApp::Render()
 		glm::scale<float>( glm::vec3( 1, abs( sin( SDL_GetTicks() / 10000.0 * 2 * M_PI ) * 2 ), 1 ) );
 
 	mvp = m_Proj_mtx * viewMtx * m_Model_mtx;
-	glUniformMatrix4fv( m_MVPLocation, 1, GL_FALSE, &( mvp[ 0 ][ 0 ] ) );
+	m_DefaultShader->setMVP_mtx( mvp );
+
 	glDrawElements( GL_TRIANGLES, 18, GL_UNSIGNED_SHORT, 0 );
 
 	glBindVertexArray( 0 ); // inactivate VAO
 	glUseProgram( 0 ); // inactivate shaders
 }
 
-void CMyApp::KeyboardDown( SDL_KeyboardEvent& key )
+void CGameViewPrivate::KeyboardDown( SDL_KeyboardEvent& key )
 {
 	m_Camera->keyDown( key.keysym.sym, SDL_GetTicks() );
 }
 
-void CMyApp::KeyboardUp( SDL_KeyboardEvent& key )
+void CGameViewPrivate::KeyboardUp( SDL_KeyboardEvent& key )
 {
 	m_Camera->keyUp( key.keysym.sym );
 }
 
-void CMyApp::MouseMove( SDL_MouseMotionEvent& mouse )
+void CGameViewPrivate::MouseMove( SDL_MouseMotionEvent& mouse )
 {
 	m_Camera->mouseMove( mouse.x, mouse.y );
 }
 
-void CMyApp::MouseDown( SDL_MouseButtonEvent& mouse )
+void CGameViewPrivate::MouseDown( SDL_MouseButtonEvent& mouse )
 {
 }
 
-void CMyApp::MouseUp( SDL_MouseButtonEvent& mouse )
+void CGameViewPrivate::MouseUp( SDL_MouseButtonEvent& mouse )
 {
 }
 
-void CMyApp::MouseWheel( SDL_MouseWheelEvent& wheel )
+void CGameViewPrivate::MouseWheel( SDL_MouseWheelEvent& wheel )
 {
 }
 
-void CMyApp::Resize( int _w, int _h )
+void CGameViewPrivate::Resize( int _w, int _h )
 {
 	glViewport( 0, 0, _w, _h );
 

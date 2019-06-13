@@ -73,7 +73,7 @@ void CGameLoggerPrivate::saveMessage( )
 			while ( !m_Messages.empty() )
 			{
 				std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-				std::time_t now_c = std::chrono::system_clock::to_time_t( now - std::chrono::hours( 24 ) );
+				std::time_t now_c = std::chrono::system_clock::to_time_t( now );
 				std::tm bt;
 				localtime_s( &bt, &now_c );
 				f << std::put_time( &bt, "%F %T" ) << "\t\t" << m_Messages.front();
