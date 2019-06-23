@@ -1,10 +1,12 @@
 #include "GameView/include/GameViewPrivate.h"
 #include "GameView/include/DefaultShader.h"
+#include "GameView/include/GrassShader.h"
 #include "GameView/include/Camera.h"
 #include "Logger/include/GameLogger.h"
 
 #include <glm/gtx/transform2.hpp>
-
+#include <SDL_image.h>
+#include <windows.h>
 #include <math.h>
 
 #include <vector>
@@ -15,8 +17,10 @@ CGameViewPrivate::CGameViewPrivate( CObject* aParent )
 	, m_VAO_id( 0 )
 	, m_VBO_id( 0 )
 	, m_IndexBuffers_id( 0 )
+	, m_GrassTexture_id( 0 )
 	, m_Camera( new CCamera( this ) )
 	, m_DefaultShader( new CDefaultShader( this ) )
+	, m_GrassShader( new CGrassShader( this ) )
 {
 	m_Logger = new CGameLogger( "CMyApp", this );
 }
@@ -63,6 +67,12 @@ bool CGameViewPrivate::Init()
 	vertices.push_back( { glm::vec3( 1, 0, 1 ), glm::vec3( 1, 1, 0 ) } );
 	vertices.push_back( { glm::vec3( 0, 2, 0 ), glm::vec3( 1, 1, 0 ) } );
 
+	//ground
+	vertices.push_back( { glm::vec3( 512, 0, 512 ), glm::vec3( 0, 1, 0 ), glm::vec2( 300.f, 300.f ) } );
+	vertices.push_back( { glm::vec3( 512, 0, -512 ), glm::vec3( 0, 1, 0 ), glm::vec2( 300.f, 0.0f ) } );
+	vertices.push_back( { glm::vec3( -512, 0, -512 ), glm::vec3( 0, 1, 0 ), glm::vec2( 0.f, 0.f ) } );
+	vertices.push_back( { glm::vec3( -512, 0, 512 ), glm::vec3( 0, 1, 0 ), glm::vec2( 0.0f, 300.f ) } );
+
 
 	GLushort indexes[] =
 		{
@@ -70,7 +80,8 @@ bool CGameViewPrivate::Init()
 			4, 5, 6,
 			7, 8, 9,
 			10, 11, 12,
-			13, 14, 15
+			13, 14, 15,
+			16, 17, 19, 17, 18, 19
 		};
 
 	glGenVertexArrays( 1, &m_VAO_id ); // generate VAO
@@ -94,6 +105,38 @@ bool CGameViewPrivate::Init()
 	glEnableVertexAttribArray( 1 ); // set the color to VAO
 	glVertexAttribPointer( (GLuint)1, 3, GL_FLOAT, GL_FALSE, sizeof( SVertex ), (void*)( sizeof( glm::vec3 ) ) );
 
+	glEnableVertexAttribArray( 2 ); // set the color to VAO
+	glVertexAttribPointer( (GLuint)2, 2, GL_FLOAT, GL_FALSE, sizeof( SVertex ), (void*)( 2 * sizeof( glm::vec3 ) ) );
+
+	glGenTextures( 1, &m_GrassTexture_id );
+	glBindTexture( GL_TEXTURE_2D, m_GrassTexture_id );
+
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+
+	GLfloat maxAnisotropy;
+	glGetFloatv( GL_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy );
+	//glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy );
+
+	TCHAR NPath[ MAX_PATH ];
+	GetCurrentDirectory( MAX_PATH, NPath );
+
+	SDL_Surface* textureData = IMG_Load( "textures/Grass.jpg" );
+	if ( textureData )
+	{
+		glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, textureData->w, textureData->h, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData->pixels );
+		glGenerateMipmap( GL_TEXTURE_2D );
+	}
+	else
+	{
+		m_Logger->logError( std::string( "Error at load texture: " ) + std::string( IMG_GetError() ) );
+		return false;
+	}
+
+	IMG_Quit();
+
 	glBindVertexArray( 0 ); // set VAO inactive
 	glBindBuffer( GL_ARRAY_BUFFER, 0 ); // set VBO inactive
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 ); // set VBO inactive
@@ -101,6 +144,12 @@ bool CGameViewPrivate::Init()
 	if ( !m_DefaultShader->isValid() )
 	{
 		m_Logger->logError( "Invalid Shader" );
+		return false;
+	}
+
+	if ( !m_GrassShader->isValid() )
+	{
+		m_Logger->logError( "Invalid Grass Shader" );
 		return false;
 	}
 
@@ -134,6 +183,7 @@ void CGameViewPrivate::Render()
 			glm::rotate<float>( glm::radians( ( 360.f / 10 ) * i ), glm::vec3( 0, 1, 0 ) ) *
 			glm::rotate<float>( rotateDeg, glm::vec3( 0, 1, 0 ) ) *
 			glm::translate<float>( glm::vec3( 0, 0, -5 ) ) *
+			glm::translate<float>( glm::vec3( 0, 2, 0 ) ) *
 			glm::rotate<float>( SDL_GetTicks() / 1000.f, glm::vec3( 0, 0, 1 ) ) *
 			glm::rotate<float>( glm::radians( 90.f ), glm::vec3( 1.f, 0, 0 ) ) *
 			glm::translate<float>( glm::vec3( 0, -1, 0 ) );
@@ -145,6 +195,7 @@ void CGameViewPrivate::Render()
 	}
 
 	m_Model_mtx =
+		glm::translate<float>( glm::vec3( 0, 2, 0 ) ) *
 		glm::rotate <float>( SDL_GetTicks() / 10000.0f, glm::vec3( 0, 1, 0 ) ) *
 		glm::scale<float>( glm::vec3( 1, abs( sin( SDL_GetTicks() / 10000.0 * 2 * M_PI ) * 2 ), 1 ) );
 
@@ -152,6 +203,11 @@ void CGameViewPrivate::Render()
 	m_DefaultShader->setMVP_mtx( mvp );
 
 	glDrawElements( GL_TRIANGLES, 18, GL_UNSIGNED_SHORT, 0 );
+
+	m_GrassShader->use();
+	mvp = m_Proj_mtx * viewMtx * glm::mat4();
+	m_GrassShader->setMVP_mtx( mvp );
+	glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (void*)( 18 * sizeof( GLushort ) ) );
 
 	glBindVertexArray( 0 ); // inactivate VAO
 	glUseProgram( 0 ); // inactivate shaders

@@ -35,7 +35,7 @@ find_library(SDL2_image_LIBRARY
   DOC "Where the SDL2 Library can be found"
 )
 
-set( SDL2_LIBRARY ${SDL2_LIBRARY} )
+set( SDL2_LIBRARY ${SDL2_LIBRARY} ${SDL2Main_LIBRARY} ${SDL2_image_LIBRARY} )
 
 find_package_handle_standard_args(SDL2 DEFAULT_MSG SDL2_INCLUDE_DIR SDL2_LIBRARY )
 

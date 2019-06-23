@@ -15,6 +15,7 @@
 
 class CCamera;
 class CDefaultShader;
+class CGrassShader;
 class CGameLogger;
 
 class CGameViewPrivate : public CObject
@@ -31,6 +32,13 @@ private:
 		TURN_LEFT,
 		TURN_RIGHT,
 		NONE
+	};
+
+	struct SVertex
+	{
+		glm::vec3 m_Position;
+		glm::vec3 m_Color;
+		glm::vec2 m_Texture;
 	};
 
 public:
@@ -51,15 +59,9 @@ public:
 	void Resize(int, int);
 
 private:
-	struct SVertex
-	{
-		glm::vec3 p;
-		glm::vec3 c;
-	};
-
-private:
 
 	CDefaultShader*		m_DefaultShader;
+	CGrassShader*		m_GrassShader;
 
 	glm::mat4			m_Model_mtx;
 	glm::mat4			m_Proj_mtx;
@@ -71,6 +73,7 @@ private:
 	GLuint				m_VAO_id; // vertex array object
 	GLuint				m_VBO_id; // vertex buffer object
 	GLuint				m_IndexBuffers_id; // vertex index buffer object
+	GLuint				m_GrassTexture_id;
 
 	CGameLogger*		m_Logger;
 };

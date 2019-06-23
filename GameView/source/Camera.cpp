@@ -102,12 +102,12 @@ void CCamera::processKeyMap()
 		case SDLK_UP:
 		case SDLK_w:
 			{
-				m_CameraPos += m_CameraDirection * ( speed / 50 );
+				m_CameraPos += glm::normalize( m_CameraDirection ) * ( speed );
 			} break;
 		case SDLK_DOWN:
 		case SDLK_s:
 			{
-				m_CameraPos -= m_CameraDirection * ( speed / 50 );
+				m_CameraPos -= glm::normalize( m_CameraDirection ) * ( speed );
 			} break;
 		case SDLK_LEFT:
 		case SDLK_a:
