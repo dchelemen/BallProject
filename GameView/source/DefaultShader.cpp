@@ -10,12 +10,12 @@ CDefaultShader::CDefaultShader( CObject* aParent )
 {
 	const std::string vertex =
 	{
-		#include "GameView\resources\myVert.vs"
+		#include "GameView\shaders\Default.vs"
 	};
 
 	const std::string fragment =
 	{
-		#include "GameView\resources\myFrag.fs"
+		#include "GameView\shaders\Default.fs"
 	};
 
 	std::vector< std::string > attribVect = { "vs_in_pos", "vs_in_col" };

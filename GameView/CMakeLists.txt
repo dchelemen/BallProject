@@ -1,14 +1,24 @@
 project( GameView )
 
-file(GLOB SOURCES
+file(GLOB HEADERS
 	include/*.h
 	include/*.hpp
-	source/*.cpp
-	resources/*.vs
-	resources/*.fs
 )
 
-add_library( ${PROJECT_NAME} SHARED ${SOURCES} )
+file(GLOB SOURCES
+	source/*.cpp
+)
+
+file(GLOB SHADERS
+	shaders/*.vs
+	shaders/*.fs
+)
+
+
+add_library( ${PROJECT_NAME} SHARED ${HEADERS} ${SOURCES} ${SHADERS} )
+source_group( "Header Files" FILES ${HEADERS} )
+source_group( "Source Files" FILES ${SOURCES} )
+source_group( "Shader Files" FILES ${SHADERS} )
 
 find_package( OpenGL REQUIRED )
 find_package( GLM REQUIRED )
