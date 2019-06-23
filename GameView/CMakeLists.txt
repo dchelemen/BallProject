@@ -1,5 +1,4 @@
-set( GAMEVIEW GameView )
-project( ${GAMEVIEW} )
+project( GameView )
 
 file(GLOB SOURCES
 	include/*.h
@@ -9,7 +8,7 @@ file(GLOB SOURCES
 	resources/*.fs
 )
 
-add_library( ${GAMEVIEW} SHARED ${SOURCES} )
+add_library( ${PROJECT_NAME} SHARED ${SOURCES} )
 
 find_package( OpenGL REQUIRED )
 find_package( GLM REQUIRED )
@@ -31,7 +30,7 @@ include_directories(
 		${CMAKE_SOURCE_DIR}
 		${SDL2_INCLUDE_DIR})
 
-target_link_libraries( ${GAMEVIEW} PUBLIC
+target_link_libraries( ${PROJECT_NAME} PUBLIC
 		${GLM_LIBRARIES}
 		${GLEW_LIBRARIES}
 		${SDL2_LIBRARIES}
@@ -39,7 +38,7 @@ target_link_libraries( ${GAMEVIEW} PUBLIC
 		Logger
 		)
 
-set_target_properties( ${GAMEVIEW}
+set_target_properties( ${PROJECT_NAME}
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/lib/debug
 	ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/lib/release

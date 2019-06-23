@@ -1,16 +1,15 @@
-set( GAMECOMMON GameCommon )
-project( ${GAMECOMMON} )
+project( GameCommon )
 
 file(GLOB SOURCES
 	include/*.h
 	source/*.cpp
 )
-add_library( ${GAMECOMMON} SHARED ${SOURCES} )
+add_library( ${PROJECT_NAME} SHARED ${SOURCES} )
 add_compile_definitions( GAMECOMMON_EXPORTS )
 
 include_directories( ${CMAKE_SOURCE_DIR} )
 
-set_target_properties( ${GAMECOMMON}
+set_target_properties( ${PROJECT_NAME}
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/lib/debug
 	ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/lib/release

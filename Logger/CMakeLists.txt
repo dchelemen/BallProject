@@ -1,13 +1,12 @@
-set( LOGGER Logger )
-project( ${LOGGER} )
+project( Logger )
 
 file(GLOB SOURCES
 	include/*.h
 	source/*.cpp
 )
 
-add_library( ${LOGGER} SHARED ${SOURCES} )
-target_link_libraries(${LOGGER}
+add_library( ${PROJECT_NAME} SHARED ${SOURCES} )
+target_link_libraries(${PROJECT_NAME}
   PRIVATE
     GameCommon
 )
@@ -16,7 +15,7 @@ add_compile_definitions( LOGGER_EXPORTS )
 
 include_directories( ${CMAKE_SOURCE_DIR} )
 
-set_target_properties( ${LOGGER}
+set_target_properties( ${PROJECT_NAME}
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/lib/debug
 	ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/lib/release

@@ -1,14 +1,13 @@
-set( BALLS Balls )
-project( ${BALLS} )
+project( OpenglExperimentProject )
 
 file(GLOB SOURCES
 	include/*.h
 	source/*.cpp
 )
 
-add_executable( ${BALLS} ${SOURCES} )
+add_executable( ${PROJECT_NAME} ${SOURCES} )
 
-target_link_libraries(Balls
+target_link_libraries( ${PROJECT_NAME}
   PRIVATE
     GameView
     Logger
@@ -16,7 +15,7 @@ target_link_libraries(Balls
 
 include_directories( ${CMAKE_SOURCE_DIR} )
 
-set_target_properties( ${BALLS}
+set_target_properties( ${PROJECT_NAME}
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/lib/debug
 	ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/lib/release
