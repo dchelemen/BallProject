@@ -14,11 +14,16 @@ file(GLOB SHADERS
 	shaders/*.fs
 )
 
+file(GLOB TEXTURES
+	textures/*
+)
 
-add_library( ${PROJECT_NAME} SHARED ${HEADERS} ${SOURCES} ${SHADERS} )
+
+add_library( ${PROJECT_NAME} SHARED ${HEADERS} ${SOURCES} ${SHADERS} ${TEXTURES} )
 source_group( "Header Files" FILES ${HEADERS} )
 source_group( "Source Files" FILES ${SOURCES} )
 source_group( "Shader Files" FILES ${SHADERS} )
+source_group( "Texture Files" FILES ${TEXTURES} )
 
 find_package( OpenGL REQUIRED )
 find_package( GLM REQUIRED )
@@ -57,3 +62,7 @@ set_target_properties( ${PROJECT_NAME}
     RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/bin/debug
 	RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin/release
 )
+
+file( COPY ${TEXTURES} DESTINATION ${CMAKE_BINARY_DIR}/bin/debug/textures )
+file( COPY ${TEXTURES} DESTINATION ${CMAKE_BINARY_DIR}/bin/release/textures )
+file( COPY ${TEXTURES} DESTINATION ${CMAKE_BINARY_DIR}/OpenglExperimentProject/textures )
